@@ -92,7 +92,7 @@ router.put('/update', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                    Delete - "DELETE /api/users/delete/:pk"
+ *                    Delete - "DELETE /api/v1/contacts/delete/:pk"
  ******************************************************************************/
 
 router.delete('/delete/:pk', async (req: Request, res: Response) => {

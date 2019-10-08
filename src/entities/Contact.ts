@@ -16,7 +16,7 @@ export interface IContact {
     email: string;
     id: IId;
     nat: string;
-    gen: string;
+    gender: string;
 }
 
 export class Contact implements IContact {
