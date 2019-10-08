@@ -2,9 +2,11 @@
 import { ContactDao } from '@daos';
 import { logger } from '@shared';
 import { Request, Response, Router, Express } from 'express';
-import { BAD_REQUEST, CREATED, OK, NOT_FOUND  } from 'http-status-codes';
+import { BAD_REQUEST, CREATED, OK, NOT_FOUND, NO_CONTENT  } from 'http-status-codes';
 import { paramMissingError } from '@shared';
 import { ParamsDictionary } from 'express-serve-static-core';
+import { IContact } from '@entities';
+import { NOTFOUND } from 'dns';
 
 // Init shared
 const router = Router();
@@ -44,18 +46,19 @@ router.get('/:pk', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                       Add One - "POST /api/users/add"
+ *                       Add One - "POST /api/v1/contacts/add"
  ******************************************************************************/
 
 router.post('/add', async (req: Request, res: Response) => {
     try {
-        const { user } = req.body;
-        if (!user) {
+        const contact : IContact = req.body.contact;
+
+        if (!contact) {
             return res.status(BAD_REQUEST).json({
                 error: paramMissingError,
             });
         }
-        await contactDao.add(user);
+        await contactDao.add(contact);
         return res.status(CREATED).end();
     } catch (err) {
         logger.error(err.message, err);
@@ -66,23 +69,23 @@ router.post('/add', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                       Update - "PUT /api/users/update"
+ *                       Update - "PUT /api/v1/contacts/update"
  ******************************************************************************/
 
 router.put('/update', async (req: Request, res: Response) => {
     try {
-        const { user } = req.body;
-        if (!user) {
+        const contact : IContact = req.body.contact;
+        if (!contact) {
             return res.status(BAD_REQUEST).json({
                 error: paramMissingError,
             });
         }
-        user.id = Number(user.id);
-        await contactDao.update(user);
-        return res.status(OK).end();
+        contact.pk = Number(contact.pk);
+        await contactDao.update(contact);
+        return res.status(NO_CONTENT).end();
     } catch (err) {
         logger.error(err.message, err);
-        return res.status(BAD_REQUEST).json({
+        return res.status(NOT_FOUND).json({
             error: err.message,
         });
     }
@@ -96,10 +99,10 @@ router.delete('/delete/:pk', async (req: Request, res: Response) => {
     try {
         const { pk } = req.params as ParamsDictionary;
         await contactDao.delete(Number(pk));
-        return res.status(OK).end();
+        return res.status(NO_CONTENT).end();
     } catch (err) {
         logger.error(err.message, err);
-        return res.status(BAD_REQUEST).json({
+        return res.status(NOT_FOUND).json({
             error: err.message,
         });
     }

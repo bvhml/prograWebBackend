@@ -42,7 +42,7 @@ export class ContactDao extends MockDaoMock implements IContactDao {
         try {
             const db = await super.openDb();
             for (let i = 0; i < db.contacts.length; i++) {
-                if (db.contacts[i].pk === contact.pk) {
+                if (Number(db.contacts[i].pk) === Number(contact.pk)) {
                     db.contacts[i] = contact;
                     await super.saveDb(db);
                     return;

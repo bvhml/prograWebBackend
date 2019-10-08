@@ -1,11 +1,20 @@
+export interface IName {
+    title: string;
+    first: string;
+    last: string;
+}
+
+export interface IId {
+    name: string;
+    value: string;
+}
+
 
 export interface IContact {
     pk?: number;
-    title: string;
-    name: string;
-    last: string;
+    name: IName;
     email: string;
-    id: string;
+    id: IId;
     nat: string;
     gen: string;
 }
@@ -13,16 +22,14 @@ export interface IContact {
 export class Contact implements IContact {
 
     public pk?: number;
-    public title: string;
-    public name: string;
-    public last: string;
+    public name: IName;
     public email: string;
-    public id: string;
+    public id: IId;
     public nat: string;
-    public gen: string;
+    public gender: string;
 
-    constructor(nameOrUser: string | IContact, title:string, last: string, email: string, id:string, nat:string, gen:string) {
-        if (typeof nameOrUser === 'string') {
+    constructor(name: IName, email: string, id:IId, nat:string, gender:string) {
+        /*if (typeof nameOrUser === 'string') {
             this.title = title;
             this.name = nameOrUser;
             this.last = last;
@@ -31,14 +38,14 @@ export class Contact implements IContact {
             this.nat = nat;
             this.gen = gen;
         } else {
-            this.title = nameOrUser.title;
-            this.name = nameOrUser.name;
-            this.last = nameOrUser.last;
-            this.email = nameOrUser.email;
-            this.id = nameOrUser.id;
-            this.nat = nameOrUser.nat;
-            this.gen = nameOrUser.gen;
+            */
+           
+            this.name = name;
+            this.email = email;
+            this.id = id;
+            this.nat = nat;
+            this.gender = gender;
             
-        }
+        
     }
 }
