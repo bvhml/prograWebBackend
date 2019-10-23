@@ -7,7 +7,8 @@ import { paramMissingError } from '@shared';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { IContact } from '@entities';
 import { NOTFOUND } from 'dns';
-
+import ContactController from '../controllers/contact.controller'
+import { getRandomInt } from '@shared'
 // Init shared
 const router = Router();
 const contactDao = new ContactDao();
@@ -18,8 +19,9 @@ const contactDao = new ContactDao();
 
 router.get('/', async (req: Request, res: Response) => {
     try {
-        const contacts = await contactDao.getAll();
-        return res.status(OK).json({contacts});
+        /*const contacts = await contactDao.getAll();*/
+        const Contacts = await ContactController.FindContacts();
+        return res.status(OK).json({ Contacts });
     } catch (err) {
         logger.error(err.message, err);
         return res.status(BAD_REQUEST).json({
@@ -35,8 +37,10 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:pk', async (req: Request, res: Response) => {
     try {
         const { pk } = req.params as ParamsDictionary;
-        const contacts = await contactDao.getContact(Number(pk));
-        return res.status(OK).json({contacts});
+        /*const contacts = await contactDao.getContact(Number(pk));*/
+        const contacts = await ContactController.FindContactByPk(String(pk));
+        
+        return res.status(OK).json({ contacts });
     } catch (err) {
         logger.error(err.message, err);
         return res.status(NOT_FOUND).json({
@@ -58,8 +62,22 @@ router.post('/add', async (req: Request, res: Response) => {
                 error: paramMissingError,
             });
         }
+        /*
         await contactDao.add(contact);
-        return res.status(CREATED).end();
+        */
+
+        const newContact = await ContactController.CreateContact({
+            pk: getRandomInt(),
+            name: contact.name,
+            email: contact.email,
+            id: contact.id,
+            nat: contact.nat,
+            gen: contact.gender
+          });
+        
+        
+          
+        return res.status(CREATED).json({ newContact });
     } catch (err) {
         logger.error(err.message, err);
         return res.status(BAD_REQUEST).json({
@@ -80,9 +98,10 @@ router.put('/update', async (req: Request, res: Response) => {
                 error: paramMissingError,
             });
         }
-        contact.pk = Number(contact.pk);
-        await contactDao.update(contact);
-        return res.status(NO_CONTENT).end();
+        /*await contactDao.update(contact);*/
+        const updateContact = await ContactController.UpdateContactByPk(contact._id, contact);
+
+        return res.status(NO_CONTENT).json({ updateContact });
     } catch (err) {
         logger.error(err.message, err);
         return res.status(NOT_FOUND).json({
@@ -98,8 +117,9 @@ router.put('/update', async (req: Request, res: Response) => {
 router.delete('/delete/:pk', async (req: Request, res: Response) => {
     try {
         const { pk } = req.params as ParamsDictionary;
-        await contactDao.delete(Number(pk));
-        return res.status(NO_CONTENT).end();
+        /*await contactDao.delete(Number(pk));*/
+        const contact = await ContactController.DeleteContactByPk(String(pk));
+        return res.status(NO_CONTENT).json({ message: 'Deleted Successfully!' });
     } catch (err) {
         logger.error(err.message, err);
         return res.status(NOT_FOUND).json({

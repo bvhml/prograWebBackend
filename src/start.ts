@@ -7,6 +7,6 @@ const port = Number(process.env.PORT || 3000);
 app.listen(port, () => {
     logger.info('Express server started on port: ' + port);
 });
-
+app.disable('x-powered-by');
 const db = 'mongodb://localhost:27017';
 connect({db});
