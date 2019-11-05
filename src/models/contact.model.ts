@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { IName, IId } from '@entities';
+import { IName, IId, IPicture } from '@entities';
 
 
 export interface IContactModel extends Document {
@@ -7,18 +7,20 @@ export interface IContactModel extends Document {
     name: IName;
     email: String;
     id: IId;
+    picture: IPicture;
     nat: String;
     gen: String;
   }
 
 const ContactSchema: Schema = new Schema({
 
-  pk: { type: Number, required: true, unique: true },
-  name: { type: Object, required: true },
-  email: { type: String, required: true },
-  id: { type: Object, required: true },
-  nat: { type: String, required: true },
-  gen: { type: String, required: true }
+  pk: { type: Number, required: false, unique: true },
+  name: { type: Object, required: false },
+  email: { type: String, required: false },
+  id: { type: Object, required: false },
+  picture: { type: Object, required: false },
+  nat: { type: String, required: false },
+  gen: { type: String, required: false }
 });
 
 export default mongoose.model<IContactModel>('Contact', ContactSchema);

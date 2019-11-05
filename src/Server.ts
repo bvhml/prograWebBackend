@@ -4,17 +4,25 @@ import { Request, Response } from 'express';
 import logger from 'morgan';
 import path from 'path';
 import BaseRouter from './routes';
+import cors from 'cors';
 
 // Init express
 const app = express();
 
 // Add middleware/settings/routes to express.
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', BaseRouter);
+
+
+app.use(async (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
+    next();
+  });
 
 /**
  * Point express to the 'views' directory. If you're using a

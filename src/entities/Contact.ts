@@ -4,6 +4,12 @@ export interface IName {
     last: string;
 }
 
+export interface IPicture {
+    large: string;
+    medium: string;
+    thumbnail: string;
+}
+
 export interface IId {
     name: string;
     value: Number;
@@ -16,8 +22,9 @@ export interface IContact {
     name: IName;
     email: string;
     id: IId;
+    picture: IPicture;
     nat: string;
-    gender: string;
+    gen: string;
 }
 
 export class Contact implements IContact {
@@ -28,9 +35,10 @@ export class Contact implements IContact {
     public email: string;
     public id: IId;
     public nat: string;
-    public gender: string;
-
-    constructor(_id: string, name: IName, email: string, id:IId, nat:string, gender:string) {
+    public gen: string;
+    public picture: IPicture;
+    
+    constructor(_id: string, name: IName, email: string, id:IId, picture:IPicture, nat:string, gen:string) {
         /*if (typeof nameOrUser === 'string') {
             this.title = title;
             this.name = nameOrUser;
@@ -46,8 +54,8 @@ export class Contact implements IContact {
             this.email = email;
             this.id = id;
             this.nat = nat;
-            this.gender = gender;
-            
+            this.gen = gen;
+            this.picture = picture;
         
     }
 }

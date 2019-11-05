@@ -21,7 +21,7 @@ router.get('/', async (req: Request, res: Response) => {
     try {
         /*const contacts = await contactDao.getAll();*/
         const Contacts = await ContactController.FindContacts();
-        return res.status(OK).json({ Contacts });
+        return res.status(OK).json(Contacts);
     } catch (err) {
         logger.error(err.message, err);
         return res.status(BAD_REQUEST).json({
@@ -55,7 +55,7 @@ router.get('/:pk', async (req: Request, res: Response) => {
 
 router.post('/add', async (req: Request, res: Response) => {
     try {
-        const contact : IContact = req.body.contact;
+        const contact : IContact = req.body;
 
         if (!contact) {
             return res.status(BAD_REQUEST).json({
@@ -71,8 +71,9 @@ router.post('/add', async (req: Request, res: Response) => {
             name: contact.name,
             email: contact.email,
             id: contact.id,
+            picture: contact.picture,
             nat: contact.nat,
-            gen: contact.gender
+            gen: contact.gen
           });
         
         
@@ -87,12 +88,52 @@ router.post('/add', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
+ *                       Add One - "POST /api/v1/contacts/add"
+ ******************************************************************************/
+
+router.post('/upload', async (req: Request, res: Response) => {
+    try {
+        const contacts : Array<IContact> = req.body;
+
+        if (!contacts) {
+            return res.status(BAD_REQUEST).json({
+                error: paramMissingError,
+            });
+        }
+        /*
+        await contactDao.add(contact);
+        */
+
+        contacts.map(async contact => { 
+            return ( await ContactController.CreateContact({
+                pk: getRandomInt(),
+                name: contact.name,
+                email: contact.email,
+                id: contact.id,
+                picture: contact.picture,
+                nat: contact.nat,
+                gen: contact.gen
+              }));
+        });
+        
+        
+          
+        return res.status(CREATED).json();
+    } catch (err) {
+        logger.error(err.message, err);
+        return res.status(BAD_REQUEST).json({
+            error: err.message,
+        });
+    }
+});
+
+/******************************************************************************
  *                       Update - "PUT /api/v1/contacts/update"
  ******************************************************************************/
 
 router.put('/update', async (req: Request, res: Response) => {
     try {
-        const contact : IContact = req.body.contact;
+        const contact : IContact = req.body;
         if (!contact) {
             return res.status(BAD_REQUEST).json({
                 error: paramMissingError,

@@ -5,6 +5,7 @@ interface ICreateContactInput {
   email: IContactModel['email'];
   name: IContactModel['name'];
   id: IContactModel['id'];
+  picture: IContactModel['picture'];
   nat: IContactModel['nat'];
   gen: IContactModel['gen'];
 }
@@ -14,6 +15,7 @@ async function CreateContact({
   email,
   name,
   id,
+  picture,
   nat,
   gen
 }: ICreateContactInput): Promise<IContactModel> {
@@ -22,6 +24,7 @@ async function CreateContact({
     email,
     name,
     id,
+    picture,
     nat,
     gen
   })
