@@ -19,11 +19,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', BaseRouter);
 
 
-app.use(async (req, res, next) => {
-    res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
-    next();
-  });
-
 /**
  * Point express to the 'views' directory. If you're using a
  * single-page-application framework like react or angular
