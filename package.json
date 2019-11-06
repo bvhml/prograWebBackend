@@ -1,6 +1,8 @@
 {
   "name": "prograWebBackend",
-  "version": "0.0.0",
+  "description": "prograWebBackend",
+  "license": "MIT",
+  "version": "1.0.0",
   "scripts": {
     "build": "node ./util/build.js",
     "lint": "tslint --project \"tsconfig.json\"",
@@ -50,5 +52,9 @@
     "tsconfig-paths": "^3.9.0",
     "tslint": "^5.20.0",
     "typescript": "^3.6.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bvhml/prograWebBackend"
   }
 }
