@@ -9,4 +9,5 @@ app.listen(port, () => {
 });
 app.disable('x-powered-by');
 const db = 'mongodb://mongo/contacts';
+//const db = 'mongodb://localhost:27017/contacts';
 connect({ db });
