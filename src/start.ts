@@ -8,5 +8,5 @@ app.listen(port, () => {
     logger.info('Express server started on port: ' + port);
 });
 app.disable('x-powered-by');
-const db = 'mongodb://localhost:27017';
+const db = 'mongodb://mongo/contacts';
 connect({ db });

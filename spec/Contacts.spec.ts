@@ -96,60 +96,73 @@ describe('Contacts Routes', () => {
                     done();
                 });
         });
+
+
+        describe(`"POST:${addContactsPath}"`, () => {
+
+            const callApi = (reqBody: IContact) => {
+                return agent.post(addContactsPath).type('application/json; charset=utf-8').send(reqBody);
+            };
+    
+            const contactData = {
+                contact : new Contact(undefined,'',
+                {'title': 'mr', 'first': 'John', 'last': 'Smith'},
+                'john.smith@gmail.com', 
+                { 'name': 'DPI', 'value': 123456789 },
+                { 'large':'', 'medium': '', 'thumbnail': '' },
+                'US',
+                'male'
+            )};
+            
+            console.log(contactData);
+    
+            it(`should return a status code of "${CREATED}" if the request was successful.`, (done) => {
+    
+                //spyOn(UserDao.prototype, 'add').and.returnValue(Promise.resolve());
+    
+                agent.post(addContactsPath).type('application/json; charset=utf-8').send(contactData) // pick up here
+                    .end((err: Error, res: Response) => {
+                        pErr(err);
+                        expect(res.status).toBe(CREATED);
+                        expect(res.body.error).toBeUndefined();
+                        done();
+                    });
+            });
+            
+            /*
+            it(`should return a JSON object with an error message of "${paramMissingError}" and a status
+                code of "${BAD_REQUEST}" if the user param was missing.`, (done) => {
+    
+                callApi({})
+                    .end((err: Error, res: Response) => {
+                        pErr(err);
+                        expect(res.status).toBe(BAD_REQUEST);
+                        expect(res.body.error).toBe(paramMissingError);
+                        done();
+                    });
+            });
+    
+            it(`should return a JSON object with an error message and a status code of "${BAD_REQUEST}"
+                if the request was unsuccessful.`, (done) => {
+    
+                const errMsg = 'Could not add user.';
+                spyOn(UserDao.prototype, 'add').and.throwError(errMsg);
+    
+                callApi(userData)
+                    .end((err: Error, res: Response) => {
+                        pErr(err);
+                        expect(res.status).toBe(BAD_REQUEST);
+                        expect(res.body.error).toBe(errMsg);
+                        done();
+                    });
+            });
+            */
+        });
       /* 
     });
   
     
-    describe(`"POST:${addUsersPath}"`, () => {
-
-        const callApi = (reqBody: object) => {
-            return agent.post(addUsersPath).type('form').send(reqBody);
-        };
-
-        const userData = {
-            user: new User('Gordan Freeman', 'gordan.freeman@gmail.com'),
-        };
-
-        it(`should return a status code of "${CREATED}" if the request was successful.`, (done) => {
-
-            spyOn(UserDao.prototype, 'add').and.returnValue(Promise.resolve());
-
-            agent.post(addUsersPath).type('form').send(userData) // pick up here
-                .end((err: Error, res: Response) => {
-                    pErr(err);
-                    expect(res.status).toBe(CREATED);
-                    expect(res.body.error).toBeUndefined();
-                    done();
-                });
-        });
-
-        it(`should return a JSON object with an error message of "${paramMissingError}" and a status
-            code of "${BAD_REQUEST}" if the user param was missing.`, (done) => {
-
-            callApi({})
-                .end((err: Error, res: Response) => {
-                    pErr(err);
-                    expect(res.status).toBe(BAD_REQUEST);
-                    expect(res.body.error).toBe(paramMissingError);
-                    done();
-                });
-        });
-
-        it(`should return a JSON object with an error message and a status code of "${BAD_REQUEST}"
-            if the request was unsuccessful.`, (done) => {
-
-            const errMsg = 'Could not add user.';
-            spyOn(UserDao.prototype, 'add').and.throwError(errMsg);
-
-            callApi(userData)
-                .end((err: Error, res: Response) => {
-                    pErr(err);
-                    expect(res.status).toBe(BAD_REQUEST);
-                    expect(res.body.error).toBe(errMsg);
-                    done();
-                });
-        });
-    });
+    
 
     describe(`"PUT:${updateUserPath}"`, () => {
 

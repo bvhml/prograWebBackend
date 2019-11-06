@@ -78,7 +78,7 @@ router.post('/add', async (req: Request, res: Response) => {
         
         
           
-        return res.status(CREATED).json({ newContact });
+        return res.status(CREATED).send('Contact created successfully!');
     } catch (err) {
         logger.error(err.message, err);
         return res.status(BAD_REQUEST).json({
@@ -88,7 +88,7 @@ router.post('/add', async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                       Add One - "POST /api/v1/contacts/add"
+ *                       Add a list of contacts - "POST /api/v1/contacts/upload"
  ******************************************************************************/
 
 router.post('/upload', async (req: Request, res: Response) => {
@@ -118,7 +118,7 @@ router.post('/upload', async (req: Request, res: Response) => {
         
         
           
-        return res.status(CREATED).json();
+        return res.status(CREATED).send('Contacts uploaded successfully!');;
     } catch (err) {
         logger.error(err.message, err);
         return res.status(BAD_REQUEST).json({
@@ -159,8 +159,27 @@ router.delete('/delete/:pk', async (req: Request, res: Response) => {
     try {
         const { pk } = req.params as ParamsDictionary;
         /*await contactDao.delete(Number(pk));*/
-        const contact = await ContactController.DeleteContactByPk(String(pk));
-        return res.status(NO_CONTENT).json({ message: 'Deleted Successfully!' });
+        
+        await ContactController.DeleteContactByPk(String(pk));
+        return res.status(OK).send('Deleted Successfully!');
+    } catch (err) {
+        logger.error(err.message, err);
+        return res.status(NOT_FOUND).json({
+            error: err.message,
+        });
+    }
+});
+
+
+/******************************************************************************
+ *                    Delete - "DELETE /api/v1/contacts/delete/:pk"
+ ******************************************************************************/
+
+router.delete('/deleteAll/', async (req: Request, res: Response) => {
+    try {
+        /*await contactDao.delete(Number(pk));*/
+        await ContactController.DeleteAllContacts();
+        return res.status(OK).send('All Deleted Successfully!');
     } catch (err) {
         logger.error(err.message, err);
         return res.status(NOT_FOUND).json({

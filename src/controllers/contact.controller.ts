@@ -76,10 +76,19 @@ async function DeleteContactByPk(pk: String): Promise<any> {
 });
 }
 
+async function DeleteAllContacts(): Promise<any> {
+  return Contact.deleteMany( { } , (error) => {
+    if(error){
+        throw error;
+    } 
+});
+}
+
 export default {
   CreateContact,
   FindContacts,
   FindContactByPk,
   DeleteContactByPk,
-  UpdateContactByPk
+  UpdateContactByPk,
+  DeleteAllContacts
 };
