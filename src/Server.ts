@@ -5,6 +5,7 @@ import logger from 'morgan';
 import path from 'path';
 import BaseRouter from './routes';
 import cors from 'cors';
+import bodyParser from 'body-parser'
 
 // Init express
 const app = express();
@@ -12,12 +13,11 @@ const app = express();
 // Add middleware/settings/routes to express.
 app.use(cors());
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', BaseRouter);
-
 
 /**
  * Point express to the 'views' directory. If you're using a
