@@ -37,9 +37,9 @@ router.get('/', async (req: Request, res: Response) => {
         return client.get(contactsRedisKey, async (err, contacts) => {
 
             // If that key exists in Redis store
-            console.log(contacts);
+            //console.log(contacts);
             if (contacts) {
-                console.log("Encontro en REDIS");
+                //console.log("Encontro en REDIS");
                 return res.status(OK).json(JSON.parse(contacts));
     
             }
@@ -48,7 +48,7 @@ router.get('/', async (req: Request, res: Response) => {
                 const Contacts = await ContactController.FindContacts();
             
                 // Save the  API response in Redis store,  data expire time in 3600 seconds, it means one hour
-                client.setex(contactsRedisKey, 60, JSON.stringify(Contacts));
+                client.setex(contactsRedisKey, 30, JSON.stringify(Contacts));
                 return res.status(OK).json(Contacts);
 
             } 
