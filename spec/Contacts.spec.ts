@@ -22,7 +22,6 @@ describe('Contacts Routes', () => {
         agent = supertest.agent(app.listen(3030));
         const db = 'mongodb://localhost:27017';
         connect({db});
-        //console.log(agent.get('/api/v1/contacts/').then());
         setTimeout(done, 10000);
         done();
     });
@@ -58,8 +57,6 @@ describe('Contacts Routes', () => {
                 'male'),
             ];
 
-           
-            //spyOn(ContactDao.prototype, 'getAll').and.returnValue(Promise.resolve(contacts));
 
             agent.get(getContactsPath)
                 .end(async (err: Error, res: Response) => {
@@ -83,9 +80,6 @@ describe('Contacts Routes', () => {
         
         it(`should return a JSON object containing an error message and a status code of
             "${BAD_REQUEST}" if the request was unsuccessful.`, (done) => {
-
-            
-            //spyOn(UserDao.prototype, 'getAll').and.throwError(errMsg);
 
             agent.get('/')
                 .end((err: Error, res: Response) => {
@@ -114,7 +108,6 @@ describe('Contacts Routes', () => {
                 'male'
             )};
             
-            console.log(contactData);
     
             it(`should return a status code of "${CREATED}" if the request was successful.`, (done) => {
     
@@ -128,126 +121,5 @@ describe('Contacts Routes', () => {
                         done();
                     });
             });
-            
-            /*
-            it(`should return a JSON object with an error message of "${paramMissingError}" and a status
-                code of "${BAD_REQUEST}" if the user param was missing.`, (done) => {
-    
-                callApi({})
-                    .end((err: Error, res: Response) => {
-                        pErr(err);
-                        expect(res.status).toBe(BAD_REQUEST);
-                        expect(res.body.error).toBe(paramMissingError);
-                        done();
-                    });
-            });
-    
-            it(`should return a JSON object with an error message and a status code of "${BAD_REQUEST}"
-                if the request was unsuccessful.`, (done) => {
-    
-                const errMsg = 'Could not add user.';
-                spyOn(UserDao.prototype, 'add').and.throwError(errMsg);
-    
-                callApi(userData)
-                    .end((err: Error, res: Response) => {
-                        pErr(err);
-                        expect(res.status).toBe(BAD_REQUEST);
-                        expect(res.body.error).toBe(errMsg);
-                        done();
-                    });
-            });
-            */
         });
-      /* 
-    });
-  
-    
-    
-
-    describe(`"PUT:${updateUserPath}"`, () => {
-
-        const callApi = (reqBody: object) => {
-            return agent.put(updateUserPath).type('form').send(reqBody);
-        };
-
-        const userData = {
-            user: new User('Gordan Freeman', 'gordan.freeman@gmail.com'),
-        };
-
-        it(`should return a status code of "${OK}" if the request was successful.`, (done) => {
-
-            spyOn(UserDao.prototype, 'update').and.returnValue(Promise.resolve());
-
-            callApi(userData)
-                .end((err: Error, res: Response) => {
-                    pErr(err);
-                    expect(res.status).toBe(OK);
-                    expect(res.body.error).toBeUndefined();
-                    done();
-                });
-        });
-
-        it(`should return a JSON object with an error message of "${paramMissingError}" and a
-            status code of "${BAD_REQUEST}" if the user param was missing.`, (done) => {
-
-            callApi({})
-                .end((err: Error, res: Response) => {
-                    pErr(err);
-                    expect(res.status).toBe(BAD_REQUEST);
-                    expect(res.body.error).toBe(paramMissingError);
-                    done();
-                });
-        });
-
-        it(`should return a JSON object with an error message and a status code of "${BAD_REQUEST}"
-            if the request was unsuccessful.`, (done) => {
-
-            const updateErrMsg = 'Could not update user.';
-            spyOn(UserDao.prototype, 'update').and.throwError(updateErrMsg);
-
-            callApi(userData)
-                .end((err: Error, res: Response) => {
-                    pErr(err);
-                    expect(res.status).toBe(BAD_REQUEST);
-                    expect(res.body.error).toBe(updateErrMsg);
-                    done();
-                });
-        });
-    });
-
-    describe(`"DELETE:${deleteUserPath}"`, () => {
-
-        const callApi = (id: number) => {
-            return agent.delete(deleteUserPath.replace(':id', id.toString()));
-        };
-
-        it(`should return a status code of "${OK}" if the request was successful.`, (done) => {
-
-            spyOn(UserDao.prototype, 'delete').and.returnValue(Promise.resolve());
-
-            callApi(5)
-                .end((err: Error, res: Response) => {
-                    pErr(err);
-                    expect(res.status).toBe(OK);
-                    expect(res.body.error).toBeUndefined();
-                    done();
-                });
-        });
-
-        it(`should return a JSON object with an error message and a status code of "${BAD_REQUEST}"
-            if the request was unsuccessful.`, (done) => {
-
-            const deleteErrMsg = 'Could not delete user.';
-            spyOn(UserDao.prototype, 'delete').and.throwError(deleteErrMsg);
-
-            callApi(1)
-                .end((err: Error, res: Response) => {
-                    pErr(err);
-                    expect(res.status).toBe(BAD_REQUEST);
-                    expect(res.body.error).toBe(deleteErrMsg);
-                    done();
-                });
-        });
-    });
-    */
 });
