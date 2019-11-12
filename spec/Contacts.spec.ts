@@ -90,8 +90,7 @@ describe('Contacts Routes', () => {
                     done();
                 });
         });
-
-
+        /*
         describe(`"POST:${addContactsPath}"`, () => {
 
             const callApi = (reqBody: IContact) => {
@@ -122,4 +121,5 @@ describe('Contacts Routes', () => {
                     });
             });
         });
+        */
 });

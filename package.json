@@ -8,7 +8,8 @@
     "lint": "tslint --project \"tsconfig.json\"",
     "start": "cross-env ENV_FILE=production node -r ./env -r module-alias/register ./dist/start.js",
     "start-dev": "nodemon --config \"./util/nodemon.json\"",
-    "test": "nodemon --config \"./util/nodemon.test.json\""
+    "test": "nodemon --config \"./util/nodemon.test.json\"",
+    "coverage":"nyc npm run test"
   },
   "_moduleAliases": {
     "@daos": "dist/daos",
@@ -29,6 +30,7 @@
     "module-alias": "^2.2.2",
     "mongoose": "^5.7.6",
     "morgan": "^1.9.1",
+    "nyc": "^14.1.1",
     "redis": "^2.8.0",
     "winston": "^3.2.1"
   },

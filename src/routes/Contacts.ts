@@ -15,13 +15,13 @@ import redis from 'redis'
 const router = Router();
 //const contactDao = new ContactDao();
 // create and connect redis client to local instance.
-const client = redis.createClient(6379,'redis');
+//const client = redis.createClient(6379,'redis');
 
-// echo redis errors to the console
+/* echo redis errors to the console
 client.on('error', (err) => {
     console.log("Error " + err)
 });
-
+*/
 /******************************************************************************
  *                      Get All Contacts - "GET /api/v1/contacts/"
  ******************************************************************************/
@@ -29,31 +29,9 @@ client.on('error', (err) => {
 router.get('/', async (req: Request, res: Response) => {
     try {
         /*const contacts = await contactDao.getAll();*/
-
-        // key to store results in Redis store
-        const contactsRedisKey = 'all:contacts';
-
-        // Try fetching the result from Redis first in case we have it cached
-        return client.get(contactsRedisKey, async (err, contacts) => {
-
-            // If that key exists in Redis store
-            console.log(contacts);
-            if (contacts) {
-                console.log("Encontro en REDIS");
-                return res.status(OK).json(JSON.parse(contacts));
-    
-            }
-            else{
-
-                const Contacts = await ContactController.FindContacts();
-            
-                // Save the  API response in Redis store,  data expire time in 3600 seconds, it means one hour
-                client.setex(contactsRedisKey, 60, JSON.stringify(Contacts));
-                return res.status(OK).json(Contacts);
-
-            } 
-
-        });
+        const Contacts = await ContactController.FindContacts();
+        return res.status(OK).json(Contacts);
+        
     } catch (err) {
         logger.error(err.message, err);
         return res.status(BAD_REQUEST).json({
