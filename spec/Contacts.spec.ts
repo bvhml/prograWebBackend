@@ -4,9 +4,8 @@ import supertest from 'supertest';
 import { BAD_REQUEST, CREATED, OK, NOT_FOUND } from 'http-status-codes';
 import { Response, SuperTest, Test, Request } from 'supertest';
 import { IContact, Contact } from '@entities';
-import { ContactDao } from '@daos';
 import { pErr, paramMissingError } from '@shared';
-import connect from '../src/connect'
+import connect from '../src/connect';
 
 describe('Contacts Routes', () => {
 
@@ -28,13 +27,11 @@ describe('Contacts Routes', () => {
 
     describe(`"GET:${getContactsPath}"`, () => {
 
-        
         it(`should return a JSON object with all the users and a status code of "${OK}" if the
             request was successful.`, (done) => {
 
             const contacts = [
-                
-                new Contact(undefined,'5dc1f3617ff8d517f6535554',
+                    new Contact(undefined,'5dc1f3617ff8d517f6535554',
                 {'title': 'mr', 'first': 'John', 'last': 'Smith'},
                 'john.smith@gmail.com', 
                 { 'name': 'DPI', 'value': 123456789},
@@ -109,7 +106,7 @@ describe('Contacts Routes', () => {
             
             //console.log(contactData);
     
-            it(`should return a status code of "${CREATED}" if the request was successful.`, (done) => {
+            it(`should return a status code of "${CREATED}" if the request was successful.`,(done) => {
     
                 //spyOn(UserDao.prototype, 'add').and.returnValue(Promise.resolve());
     
