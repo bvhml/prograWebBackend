@@ -15,7 +15,7 @@ import redis from 'redis'
 const router = Router();
 //const contactDao = new ContactDao();
 // create and connect redis client to local instance.
-const client = redis.createClient(6379,'redis');
+const client = redis.createClient(6379,'localhost');
 
 // echo redis errors to the console
 client.on('error', (err) => {
@@ -37,7 +37,6 @@ router.get('/', async (req: Request, res: Response) => {
         return client.get(contactsRedisKey, async (err, contacts) => {
 
             // If that key exists in Redis store
-            //console.log(contacts);
             if (contacts) {
                 //console.log("Encontro en REDIS");
                 return res.status(OK).json(JSON.parse(contacts));
@@ -69,10 +68,30 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:pk', async (req: Request, res: Response) => {
     try {
         const { pk } = req.params as ParamsDictionary;
-        /*const contacts = await contactDao.getContact(Number(pk));*/
-        const contacts = await ContactController.FindContactByPk(String(pk));
+        // key to store results in Redis store
+        const contactsRedisKey = pk;
+
+        // Try fetching the result from Redis first in case we have it cached
+        return client.get(contactsRedisKey, async (err, contact) => {
+
+            // If that key exists in Redis store
+            if (contact) {
+                return res.status(OK).json({ contact });
+    
+            }
+            else{
+
+                const contact = await ContactController.FindContactByPk(String(pk));
+            
+                // Save the  API response in Redis store,  data expire time in 3600 seconds, it means one hour
+                client.setex(contactsRedisKey, 30, JSON.stringify(contact));
+                return res.status(OK).json({contact});
+
+            } 
+
+        });
+
         
-        return res.status(OK).json({ contacts });
     } catch (err) {
         logger.error(err.message, err);
         return res.status(NOT_FOUND).json({

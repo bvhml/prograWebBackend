@@ -3,12 +3,12 @@ import express from 'express';
 import { Request, Response } from 'express';
 import logger from 'morgan';
 import path from 'path';
-import BaseRouter from './routes';
+import BaseRouter from '../routes';
 import cors from 'cors';
 import bodyParser from 'body-parser'
 
 // Init express
-const app = express();
+export const app = express();
 
 // Add middleware/settings/routes to express.
 app.use(cors());
