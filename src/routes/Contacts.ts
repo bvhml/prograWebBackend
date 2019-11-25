@@ -9,9 +9,18 @@ import { IContact } from '@entities';
 import { NOTFOUND } from 'dns';
 import ContactController from '../controllers/contact.controller'
 import { getRandomInt } from '@shared'
+import redis from 'redis'
+
 // Init shared
 const router = Router();
-const contactDao = new ContactDao();
+//const contactDao = new ContactDao();
+// create and connect redis client to local instance.
+const client = redis.createClient(6379,'localhost');
+
+// echo redis errors to the console
+client.on('error', (err) => {
+    console.log("Error " + err)
+});
 
 /******************************************************************************
  *                      Get All Contacts - "GET /api/v1/contacts/"
@@ -20,8 +29,30 @@ const contactDao = new ContactDao();
 router.get('/', async (req: Request, res: Response) => {
     try {
         /*const contacts = await contactDao.getAll();*/
-        const Contacts = await ContactController.FindContacts();
-        return res.status(OK).json({ Contacts });
+
+        // key to store results in Redis store
+        const contactsRedisKey = 'all:contacts';
+
+        // Try fetching the result from Redis first in case we have it cached
+        return client.get(contactsRedisKey, async (err, contacts) => {
+
+            // If that key exists in Redis store
+            if (contacts) {
+                //console.log("Encontro en REDIS");
+                return res.status(OK).json(JSON.parse(contacts));
+    
+            }
+            else{
+
+                const Contacts = await ContactController.FindContacts();
+            
+                // Save the  API response in Redis store,  data expire time in 3600 seconds, it means one hour
+                client.setex(contactsRedisKey, 30, JSON.stringify(Contacts));
+                return res.status(OK).json(Contacts);
+
+            } 
+
+        });
     } catch (err) {
         logger.error(err.message, err);
         return res.status(BAD_REQUEST).json({
@@ -37,10 +68,30 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:pk', async (req: Request, res: Response) => {
     try {
         const { pk } = req.params as ParamsDictionary;
-        /*const contacts = await contactDao.getContact(Number(pk));*/
-        const contacts = await ContactController.FindContactByPk(String(pk));
+        // key to store results in Redis store
+        const contactsRedisKey = pk;
+
+        // Try fetching the result from Redis first in case we have it cached
+        return client.get(contactsRedisKey, async (err, contact) => {
+
+            // If that key exists in Redis store
+            if (contact) {
+                return res.status(OK).json({ contact });
+    
+            }
+            else{
+
+                const contact = await ContactController.FindContactByPk(String(pk));
+            
+                // Save the  API response in Redis store,  data expire time in 3600 seconds, it means one hour
+                client.setex(contactsRedisKey, 30, JSON.stringify(contact));
+                return res.status(OK).json({contact});
+
+            } 
+
+        });
+
         
-        return res.status(OK).json({ contacts });
     } catch (err) {
         logger.error(err.message, err);
         return res.status(NOT_FOUND).json({
@@ -55,7 +106,7 @@ router.get('/:pk', async (req: Request, res: Response) => {
 
 router.post('/add', async (req: Request, res: Response) => {
     try {
-        const contact : IContact = req.body.contact;
+        const contact : IContact = req.body;
 
         if (!contact) {
             return res.status(BAD_REQUEST).json({
@@ -71,13 +122,54 @@ router.post('/add', async (req: Request, res: Response) => {
             name: contact.name,
             email: contact.email,
             id: contact.id,
+            picture: contact.picture,
             nat: contact.nat,
-            gen: contact.gender
+            gen: contact.gen
           });
         
         
           
-        return res.status(CREATED).json({ newContact });
+        return res.status(CREATED).send('Contact created successfully!');
+    } catch (err) {
+        logger.error(err.message, err);
+        return res.status(BAD_REQUEST).json({
+            error: err.message,
+        });
+    }
+});
+
+/******************************************************************************
+ *                       Add a list of contacts - "POST /api/v1/contacts/upload"
+ ******************************************************************************/
+
+router.post('/upload', async (req: Request, res: Response) => {
+    try {
+        const contacts : Array<IContact> = req.body;
+
+        if (!contacts) {
+            return res.status(BAD_REQUEST).json({
+                error: paramMissingError,
+            });
+        }
+        /*
+        await contactDao.add(contact);
+        */
+
+        contacts.map(async contact => { 
+            return ( await ContactController.CreateContact({
+                pk: getRandomInt(),
+                name: contact.name,
+                email: contact.email,
+                id: contact.id,
+                picture: contact.picture,
+                nat: contact.nat,
+                gen: contact.gen
+              }));
+        });
+        
+        
+          
+        return res.status(CREATED).send('Contacts uploaded successfully!');;
     } catch (err) {
         logger.error(err.message, err);
         return res.status(BAD_REQUEST).json({
@@ -92,7 +184,7 @@ router.post('/add', async (req: Request, res: Response) => {
 
 router.put('/update', async (req: Request, res: Response) => {
     try {
-        const contact : IContact = req.body.contact;
+        const contact : IContact = req.body;
         if (!contact) {
             return res.status(BAD_REQUEST).json({
                 error: paramMissingError,
@@ -118,8 +210,27 @@ router.delete('/delete/:pk', async (req: Request, res: Response) => {
     try {
         const { pk } = req.params as ParamsDictionary;
         /*await contactDao.delete(Number(pk));*/
-        const contact = await ContactController.DeleteContactByPk(String(pk));
-        return res.status(NO_CONTENT).json({ message: 'Deleted Successfully!' });
+        
+        await ContactController.DeleteContactByPk(String(pk));
+        return res.status(OK).send('Deleted Successfully!');
+    } catch (err) {
+        logger.error(err.message, err);
+        return res.status(NOT_FOUND).json({
+            error: err.message,
+        });
+    }
+});
+
+
+/******************************************************************************
+ *                    Delete - "DELETE /api/v1/contacts/delete/:pk"
+ ******************************************************************************/
+
+router.delete('/deleteAll/', async (req: Request, res: Response) => {
+    try {
+        /*await contactDao.delete(Number(pk));*/
+        await ContactController.DeleteAllContacts();
+        return res.status(OK).send('All Deleted Successfully!');
     } catch (err) {
         logger.error(err.message, err);
         return res.status(NOT_FOUND).json({

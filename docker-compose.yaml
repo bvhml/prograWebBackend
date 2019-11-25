@@ -1,0 +1,23 @@
+version: '3.1'
+services:
+  mongo:
+    image: mongo
+    ports: 
+      - "27017:27017"
+  node:
+    image: 7179/pwb
+    ports:
+      - "3030:3030"    
+    links:
+      - mongo
+      - redis
+    depends_on:
+      - mongo
+  redis:
+    image: redis
+  react:
+    image: 7179/pw
+    ports:
+      - "3000:3000"
+    links:
+      - node

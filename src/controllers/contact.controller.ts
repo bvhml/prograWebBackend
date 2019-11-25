@@ -5,6 +5,7 @@ interface ICreateContactInput {
   email: IContactModel['email'];
   name: IContactModel['name'];
   id: IContactModel['id'];
+  picture: IContactModel['picture'];
   nat: IContactModel['nat'];
   gen: IContactModel['gen'];
 }
@@ -14,6 +15,7 @@ async function CreateContact({
   email,
   name,
   id,
+  picture,
   nat,
   gen
 }: ICreateContactInput): Promise<IContactModel> {
@@ -22,6 +24,7 @@ async function CreateContact({
     email,
     name,
     id,
+    picture,
     nat,
     gen
   })
@@ -73,10 +76,19 @@ async function DeleteContactByPk(pk: String): Promise<any> {
 });
 }
 
+async function DeleteAllContacts(): Promise<any> {
+  return Contact.deleteMany( { } , (error) => {
+    if(error){
+        throw error;
+    } 
+});
+}
+
 export default {
   CreateContact,
   FindContacts,
   FindContactByPk,
   DeleteContactByPk,
-  UpdateContactByPk
+  UpdateContactByPk,
+  DeleteAllContacts
 };

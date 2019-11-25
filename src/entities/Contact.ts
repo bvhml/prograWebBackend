@@ -4,6 +4,12 @@ export interface IName {
     last: string;
 }
 
+export interface IPicture {
+    large: string;
+    medium: string;
+    thumbnail: string;
+}
+
 export interface IId {
     name: string;
     value: Number;
@@ -16,8 +22,9 @@ export interface IContact {
     name: IName;
     email: string;
     id: IId;
+    picture: IPicture;
     nat: string;
-    gender: string;
+    gen: string;
 }
 
 export class Contact implements IContact {
@@ -28,26 +35,27 @@ export class Contact implements IContact {
     public email: string;
     public id: IId;
     public nat: string;
-    public gender: string;
-
-    constructor(_id: string, name: IName, email: string, id:IId, nat:string, gender:string) {
-        /*if (typeof nameOrUser === 'string') {
-            this.title = title;
-            this.name = nameOrUser;
-            this.last = last;
-            this.email = email || '';
-            this.id = id;
-            this.nat = nat;
-            this.gen = gen;
+    public gen: string;
+    public picture: IPicture;
+    
+    constructor(Contact?: IContact , _id?: string, name?: IName, email?: string, id?:IId, picture?:IPicture, nat?:string, gen?:string) {
+        if (typeof Contact === 'object') {
+            this._id = Contact._id;
+            this.name = Contact.name;
+            this.email = Contact.email;
+            this.id = Contact.id;
+            this.nat = Contact.nat;
+            this.gen = Contact.gen;
+            this.picture = Contact.picture
         } else {
-            */
-            this._id = _id;
-            this.name = name;
-            this.email = email;
-            this.id = id;
-            this.nat = nat;
-            this.gender = gender;
-            
-        
+            this._id = _id || '';
+            this.name = name || {'title':'','first':'', 'last':''};
+            this.email = email || '';
+            this.id = id || {'name':'', 'value': 0};
+            this.nat = nat || '';
+            this.gen = gen || '';
+            this.picture = picture || {'large': '', 'medium':'', 'thumbnail': ''};
+        }
     }
+    
 }

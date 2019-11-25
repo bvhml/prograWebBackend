@@ -10,6 +10,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -21,3 +22,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#Mockfiles
+/util/mockDb25.json
+/util/mockDb50.json
+/util/mockDb100.json
+
